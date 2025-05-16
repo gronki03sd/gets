@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord - Gestion des Événements{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Tableau de bord</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Statistics cards with updated styling -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-4 mb-3 text-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="display-4 fw-bold">{{ total_participants }}</h2>
+                <h6 class="text-muted">Participants</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-4 mb-3 text-secondary">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <h2 class="display-4 fw-bold">{{ total_activites }}</h2>
+                <h6 class="text-muted">Événements</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-4 mb-3" style="color: var(--success-color);">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h2 class="display-4 fw-bold">{{ total_inscriptions }}</h2>
+                <h6 class="text-muted">Inscriptions</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-4 mb-3" style="color: var(--warning-color);">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h2 class="display-4 fw-bold">{{ activites_a_venir|length }}</h2>
+                <h6 class="text-muted">Événements à venir</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Upcoming events -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary">
+                <h5 class="mb-0"><i class="fas fa-calendar-day me-2"></i>Prochains événements</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for activite in activites_a_venir %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'activite_detail' activite.pk %}" class="text-decoration-none">
+                                    <strong>{{ activite.nom }}</strong>
+                                </a>
+                                <div class="text-muted small">
+                                    <i class="far fa-calendar-alt me-1"></i>{{ activite.date_debut|date:"j F Y" }}
+                                    <i class="far fa-clock ms-2 me-1"></i>{{ activite.date_debut|date:"H:i" }}
+                                </div>
+                            </div>
+                            <div>
+                                {% if activite.est_complete %}
+                                <span class="badge bg-danger">Complet</span>
+                                {% else %}
+                                <span class="badge bg-success">
+                                    {% if activite.nombre_places_restantes %}
+                                    {{ activite.nombre_places_restantes }} places
+                                    {% else %}
+                                    Places disponibles
+                                    {% endif %}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-info-circle me-2"></i>Aucun événement à venir
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'activite_list' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-list me-1"></i> Voir tous les événements</a>
+                <a href="{% url 'calendrier_activites' %}" class="btn btn-sm btn-outline-secondary ms-2"><i class="fas fa-calendar-alt me-1"></i> Calendrier</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular events -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-star me-2"></i>Événements populaires</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for activite in activites_populaires %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'activite_detail' activite.pk %}" class="text-decoration-none">
+                                    <strong>{{ activite.nom }}</strong>
+                                </a>
+                                <div class="text-muted small">
+                                    <i class="far fa-calendar-alt me-1"></i>{{ activite.date_debut|date:"j F Y" }}
+                                </div>
+                            </div>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-users me-1"></i>{{ activite.nombre_inscrits }} participants
+                            </span>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-info-circle me-2"></i>Aucun événement populaire
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'activite_list' %}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-chart-line me-1"></i> Analyser les tendances</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Latest registrations and Quick actions -->
+<div class="row">
+    <!-- Recent registrations -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success">
+                <h5 class="mb-0"><i class="fas fa-user-check me-2"></i>Dernières inscriptions</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for participant in recent_participants %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'participant_detail' participant.pk %}" class="text-decoration-none">
+                                    <strong>{{ participant.prenom }} {{ participant.nom }}</strong>
+                                </a>
+                                <div class="text-muted small">
+                                    <i class="far fa-calendar-alt me-1"></i>Inscrit le {{ participant.date_inscription|date:"j F Y" }}
+                                </div>
+                            </div>
+                            <a href="{% url 'inscription_create' %}?participant_id={{ participant.pk }}" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-plus me-1"></i>Inscrire
+                            </a>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-info-circle me-2"></i>Aucune inscription récente
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'participant_list' %}" class="btn btn-sm btn-outline-success"><i class="fas fa-users me-1"></i> Voir tous les participants</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Actions rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <a href="{% url 'participant_create' %}" class="btn btn-primary w-100 p-3 h-100">
+                            <i class="fas fa-user-plus mb-2 d-block" style="font-size: 2rem;"></i>
+                            <span>Ajouter un participant</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="{% url 'activite_create' %}" class="btn btn-secondary w-100 p-3 h-100">
+                            <i class="fas fa-calendar-plus mb-2 d-block" style="font-size: 2rem;"></i>
+                            <span>Créer un événement</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="{% url 'inscription_create' %}" class="btn btn-success w-100 p-3 h-100">
+                            <i class="fas fa-clipboard-check mb-2 d-block" style="font-size: 2rem;"></i>
+                            <span>Nouvelle inscription</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="{% url 'calendrier_activites' %}" class="btn btn-warning w-100 p-3 h-100">
+                            <i class="fas fa-calendar-alt mb-2 d-block" style="font-size: 2rem;"></i>
+                            <span>Voir le calendrier</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

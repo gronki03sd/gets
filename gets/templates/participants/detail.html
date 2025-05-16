@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ participant.prenom }} {{ participant.nom }} - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>{{ participant.prenom }} {{ participant.nom }}</h1>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'participant_edit' participant.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Modifier
+        </a>
+        <a href="{% url 'participant_delete' participant.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash me-2"></i>Supprimer
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations du participant</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Nom complet</dt>
+                    <dd class="col-sm-8">{{ participant.prenom }} {{ participant.nom }}</dd>
+
+                    <dt class="col-sm-4">Date de naissance</dt>
+                    <dd class="col-sm-8">{{ participant.date_naissance|date:"d/m/Y" }}</dd>
+
+                    <dt class="col-sm-4">Adresse</dt>
+                    <dd class="col-sm-8">{{ participant.adresse|default:"Non renseignée" }}</dd>
+
+                    <dt class="col-sm-4">Téléphone</dt>
+                    <dd class="col-sm-8">{{ participant.telephone|default:"Non renseigné" }}</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">{{ participant.email|default:"Non renseigné" }}</dd>
+
+                    <dt class="col-sm-4">Date d'inscription</dt>
+                    <dd class="col-sm-8">{{ participant.date_inscription|date:"d/m/Y" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Activités</h5>
+                <a href="{% url 'inscription_create' %}?participant_id={{ participant.pk }}"
+                    class="btn btn-sm btn-light">
+                    <i class="fas fa-plus me-1"></i>Inscrire
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for inscription in inscriptions %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'activite_detail' inscription.activite.pk %}">{{
+                                    inscription.activite.nom }}</a>
+                                <small class="d-block text-muted">
+                                    {{ inscription.activite.date_debut|date:"j F Y H:i" }}
+                                    <span
+                                        class="badge bg-{% if inscription.statut == 'inscrit' %}success{% elif inscription.statut == 'en_attente' %}warning{% else %}danger{% endif %}">
+                                        {{ inscription.get_statut_display }}
+                                    </span>
+                                </small>
+                            </div>
+                            <div>
+                                <a href="{% url 'inscription_edit' inscription.pk %}" class="btn btn-sm btn-warning"
+                                    title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'inscription_delete' inscription.pk %}" class="btn btn-sm btn-danger"
+                                    title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">Aucune activité</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

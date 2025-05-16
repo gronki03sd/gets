@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des infrastructures - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>Liste des infrastructures</h1>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'infrastructure_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Ajouter une infrastructure
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Capacité</th>
+                        <th>Localisation</th>
+                        <th>Disponible</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for infrastructure in infrastructures %}
+                    <tr>
+                        <td>{{ infrastructure.nom }}</td>
+                        <td>{{ infrastructure.type }}</td>
+                        <td>{{ infrastructure.capacite|default:"--" }}</td>
+                        <td>{{ infrastructure.localisation|default:"--" }}</td>
+                        <td>
+                            {% if infrastructure.disponible %}
+                            <span class="badge bg-success">Oui</span>
+                            {% else %}
+                            <span class="badge bg-danger">Non</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'infrastructure_detail' infrastructure.pk %}" class="btn btn-sm btn-info"
+                                title="Détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'infrastructure_edit' infrastructure.pk %}" class="btn btn-sm btn-warning"
+                                title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'infrastructure_delete' infrastructure.pk %}" class="btn btn-sm btn-danger"
+                                title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucune infrastructure trouvée</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

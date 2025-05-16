@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ activite.nom }} - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>{{ activite.nom }}</h1>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'activite_edit' activite.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Modifier
+        </a>
+        <a href="{% url 'activite_delete' activite.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash me-2"></i>Supprimer
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations de l'activité</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Nom</dt>
+                    <dd class="col-sm-8">{{ activite.nom }}</dd>
+
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">
+                        {% if activite.description %}
+                        {{ activite.description }}
+                        {% else %}
+                        Aucune description
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Date de début</dt>
+                    <dd class="col-sm-8">{{ activite.date_debut|date:"d/m/Y H:i" }}</dd>
+
+                    <dt class="col-sm-4">Durée</dt>
+                    <dd class="col-sm-8">{{ activite.duree }} minutes</dd>
+
+                    <dt class="col-sm-4">Responsable</dt>
+                    <dd class="col-sm-8">
+                        {% if activite.responsable %}
+                        {{ activite.responsable }}
+                        {% else %}
+                        Non assigné
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Infrastructure</dt>
+                    <dd class="col-sm-8">
+                        {% if activite.infrastructure %}
+                        {{ activite.infrastructure }}
+                        {% else %}
+                        Non assignée
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Capacité</dt>
+                    <dd class="col-sm-8">
+                        {% if activite.capacite_max %}
+                        {{ activite.capacite_max }}
+                        {% else %}
+                        Illimitée
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Places restantes</dt>
+                    <dd class="col-sm-8">
+                        {% if activite.capacite_max %}
+                        {% if activite.est_complete %}
+                        <span class="badge bg-danger">Complet</span>
+                        {% else %}
+                        <span class="badge bg-success">{{ activite.nombre_places_restantes }}</span>
+                        {% endif %}
+                        {% else %}
+                        <span class="badge bg-info">Illimitée</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Participants inscrits</h5>
+                {% if not activite.est_complete %}
+                <a href="{% url 'inscription_create' %}?activite_id={{ activite.pk }}" class="btn btn-sm btn-light">
+                    <i class="fas fa-plus me-1"></i>Inscrire
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for inscription in inscriptions %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'participant_detail' inscription.participant.pk %}">
+                                    {{ inscription.participant.prenom }} {{ inscription.participant.nom }}
+                                </a>
+                                <small class="d-block text-muted">
+                                    Inscrit le {{ inscription.date_inscription|date:"d/m/Y" }}
+                                    <span
+                                        class="badge {% if inscription.statut == 'inscrit' %}bg-success{% elif inscription.statut == 'en_attente' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ inscription.get_statut_display }}
+                                    </span>
+                                </small>
+                            </div>
+                            <div>
+                                <a href="{% url 'inscription_edit' inscription.pk %}" class="btn btn-sm btn-warning"
+                                    title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'inscription_delete' inscription.pk %}" class="btn btn-sm btn-danger"
+                                    title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">Aucun participant inscrit</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Matériel requis</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for materiel_requis in materiels %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'materiel_detail' materiel_requis.materiel.pk %}">
+                                    {{ materiel_requis.materiel.nom }}
+                                </a>
+                                {% if materiel_requis.materiel.description %}
+                                <small class="d-block text-muted">{{
+                                    materiel_requis.materiel.description|truncatechars:100 }}</small>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-primary">Quantité: {{ materiel_requis.quantite_requise }}</span>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">Aucun matériel requis</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

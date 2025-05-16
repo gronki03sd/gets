@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter du matériel - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Ajouter du matériel</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations du matériel</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}
+                        <div class="text-danger">{{ form.nom.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.quantite_disponible.id_for_label }}" class="form-label">Quantité
+                            disponible</label>
+                        {{ form.quantite_disponible }}
+                        {% if form.quantite_disponible.errors %}
+                        <div class="text-danger">{{ form.quantite_disponible.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-end">
+                        <a href="{% url 'materiel_list' %}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

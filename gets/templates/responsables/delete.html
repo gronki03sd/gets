@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer {{ responsable.prenom }} {{ responsable.nom }} - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Supprimer un responsable</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirmation de suppression</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">Êtes-vous sûr de vouloir supprimer le responsable <strong>{{ responsable.prenom }} {{
+                        responsable.nom }}</strong> ?</p>
+                <p class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Cette action est irréversible. Si ce responsable est assigné à des activités, celles-ci n'auront
+                    plus de responsable.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="text-end">
+                        <a href="{% url 'responsable_detail' responsable.pk %}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

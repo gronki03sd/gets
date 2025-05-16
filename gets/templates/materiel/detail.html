@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ materiel.nom }} - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>{{ materiel.nom }}</h1>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'materiel_edit' materiel.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Modifier
+        </a>
+        <a href="{% url 'materiel_delete' materiel.pk %}" class="btn btn-danger">
+            <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            <a href="{% url 'materiel_delete' materiel.pk %}" class="btn btn-danger">
+                <i class="fas fa-trash me-2"></i>Supprimer
+            </a>
+            </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Informations du matériel</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4">Nom</dt>
+                                <dd class="col-sm-8">{{ materiel.nom }}</dd>
+            
+                                <dt class="col-sm-4">Description</dt>
+                                <dd class="col-sm-8">{{ materiel.description|default:"Aucune description" }}</dd>
+            
+                                <dt class="col-sm-4">Quantité disponible</dt>
+                                <dd class="col-sm-8">{{ materiel.quantite_disponible }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Activités utilisant ce matériel</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                {% for activite in activites %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <a href="{% url 'activite_detail' activite.pk %}">{{ activite.nom }}</a>
+                                            <small class="d-block text-muted">{{ activite.date_debut|date:"j F Y H:i" }}</small>
+                                        </div>
+                                        <div>
+                                            {% for am in activite.activite_materiels.all %}
+                                            {% if am.materiel.id == materiel.id %}
+                                            <span class="badge bg-primary">Quantité requise: {{ am.quantite_requise }}</span>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item text-center">Aucune activité</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}

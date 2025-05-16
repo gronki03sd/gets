@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier {{ responsable.prenom }} {{ responsable.nom }} - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Modifier {{ responsable.prenom }} {{ responsable.nom }}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Informations du responsable</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                            {{ form.nom }}
+                            {% if form.nom.errors %}
+                            <div class="text-danger">{{ form.nom.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.prenom.id_for_label }}" class="form-label">Prénom</label>
+                            {{ form.prenom }}
+                            {% if form.prenom.errors %}
+                            <div class="text-danger">{{ form.prenom.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.specialite.id_for_label }}" class="form-label">Spécialité</label>
+                        {{ form.specialite }}
+                        {% if form.specialite.errors %}
+                        <div class="text-danger">{{ form.specialite.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                            {{ form.telephone }}
+                            {% if form.telephone.errors %}
+                            <div class="text-danger">{{ form.telephone.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <a href="{% url 'responsable_detail' responsable.pk %}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-warning">Mettre à jour</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

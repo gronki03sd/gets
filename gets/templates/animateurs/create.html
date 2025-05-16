@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un animateur - Camp de Vacances{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Ajouter un animateur</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations de l'animateur</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                            {{ form.nom }}
+                            {% if form.nom.errors %}
+                            <div class="text-danger">{{ form.nom.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.prenom.id_for_label }}" class="form-label">Prénom</label>
+                            {{ form.prenom }}
+                            {% if form.prenom.errors %}
+                            <div class="text-danger">{{ form.prenom.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.competence.id_for_label }}" class="form-label">Compétence</label>
+                        {{ form.competence }}
+                        {% if form.competence.errors %}
+                        <div class="text-danger">{{ form.competence.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                            {{ form.telephone }}
+                            {% if form.telephone.errors %}
+                            <div class="text-danger">{{ form.telephone.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <a href="{% url 'animateur_list' %}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

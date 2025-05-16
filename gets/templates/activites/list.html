@@ -1,0 +1,63 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Liste des événements - Gestion des Événements{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h1>Liste des événements</h1>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'calendrier_activites' %}" class="btn btn-primary me-2">
+            <i class="fas fa-calendar-alt me-2"></i>Calendrier
+        </a>
+        <a href="{% url 'activite_create' %}" class="btn btn-success">
+            <i class="fas fa-calendar-plus me-2"></i>Ajouter un événement
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <form hx-get="{% url 'activite_search' %}" hx-target="#activite-list" class="row g-3">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    {{ form.nom }}
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    {{ form.date_debut }}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    Rechercher
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        <div id="activite-list">
+            {% include 'partials/activite_list.html' %}
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <div class="card bg-light border-0">
+        <div class="card-body">
+            <h5><i class="fas fa-lightbulb me-2 text-warning"></i>Conseils pour la gestion d'événements</h5>
+            <ul class="mb-0">
+                <li>Utilisez le <strong>calendrier</strong> pour une vue d'ensemble de vos événements</li>
+                <li>Définissez une <strong>capacité maximale</strong> pour contrôler le nombre d'inscriptions</li>
+                <li>Assignez un <strong>responsable</strong> à chaque événement pour une meilleure coordination</li>
+                <li>Vérifiez la <strong>disponibilité</strong> des infrastructures avant de créer un événement</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
