@@ -123,11 +123,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Login URLs
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
+
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
