@@ -1,0 +1,139 @@
+{% extends 'client/base_client.html' %}
+
+{% block title %}Accueil - GETS{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Découvrez des événements exceptionnels</h1>
+                <p class="lead mb-4">Trouvez, réservez et participez à nos activités soigneusement sélectionnées pour
+                    vous offrir des expériences inoubliables.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{% url 'client_event_list' %}" class="btn btn-primary btn-lg px-4 me-md-2">Voir les
+                        événements</a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <img src="/static/client/images/events.jpg" alt="Événements" class="img-fluid rounded shadow-lg"
+                    onerror="this.onerror=null; this.src='/static/client/images/placeholder.jpg';">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Events Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="text-center">Événements à venir</h2>
+                <p class="text-center text-muted">Découvrez nos prochaines activités et réservez votre place dès
+                    maintenant.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% if upcoming_activities %}
+            {% for activity in upcoming_activities %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                        style="height: 200px;">
+                        <i class="fas fa-calendar-day fa-4x text-primary"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ activity.nom }}</h5>
+                        <p class="card-text text-muted mb-2">
+                            <i class="fas fa-clock me-1"></i> {{ activity.date_debut|date:"d/m/Y à H:i" }} - Durée: {{
+                            activity.duree }} min
+                        </p>
+                        {% if activity.infrastructure %}
+                        <p class="card-text text-muted mb-3">
+                            <i class="fas fa-map-marker-alt me-1"></i> {{ activity.infrastructure.nom }}
+                        </p>
+                        {% endif %}
+                        <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'client_event_detail' activity.id %}"
+                            class="btn btn-outline-primary w-100">Détails et inscription</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Aucun événement à venir n'est actuellement programmé. Veuillez consulter cette page ultérieurement.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'client_event_list' %}" class="btn btn-primary">Voir tous les événements</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2>Pourquoi choisir nos événements ?</h2>
+                <p class="text-muted">Notre plateforme vous offre une expérience unique avec des avantages exclusifs.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3 mx-auto"
+                            style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="card-title">Qualité garantie</h5>
+                        <p class="card-text">Nos événements sont soigneusement sélectionnés pour vous offrir des
+                            expériences exceptionnelles.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3 mx-auto"
+                            style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5 class="card-title">Encadrement professionnel</h5>
+                        <p class="card-text">Tous nos événements sont encadrés par des professionnels qualifiés et
+                            passionnés.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3 mx-auto"
+                            style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5 class="card-title">Sécurité et confiance</h5>
+                        <p class="card-text">Nos infrastructures sont régulièrement contrôlées pour assurer votre
+                            sécurité.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -2,7 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Authentication
+    # Client Routes
+    path('', views.client_home, name='client_home'),
+    path('events/', views.client_event_list, name='client_event_list'),
+    path('events/<int:pk>/', views.client_event_detail, name='client_event_detail'),
+    path('events/<int:pk>/register/', views.client_event_register, name='client_event_register'),
+    path('account/dashboard/', views.client_dashboard, name='client_dashboard'),
+    path('account/profile/', views.client_profile, name='client_profile'),
+    path('account/participant-info/', views.client_update_participant, name='client_update_participant'),
+    path('account/cancel-registration/<int:inscription_id>/', views.client_cancel_registration, name='client_cancel_registration'),
+    
+    # Admin Routes (existing routes) - keeping original URLs for backward compatibility
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
@@ -10,7 +20,7 @@ urlpatterns = [
     path('profile/change-password/', views.change_password, name='change_password'),
     
     # Dashboard
-    path('', views.dashboard, name='dashboard'),
+    path('admin/', views.dashboard, name='dashboard'),
     
     # Participants
     path('participants/', views.participant_list, name='participant_list'),
@@ -65,4 +75,3 @@ urlpatterns = [
     # Recherche
     path('recherche/', views.recherche_avancee, name='recherche_avancee'),
 ]
-

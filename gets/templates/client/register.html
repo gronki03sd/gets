@@ -1,0 +1,118 @@
+{% extends 'client/base.html' %}
+
+{% block title %}Créer un compte - EventHub{% endblock %}
+
+{% block content %}
+<!-- Registration Header -->
+<section class="bg-light py-5 mb-4">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-2">Créer un compte</h1>
+        <p class="lead">Rejoignez notre communauté pour découvrir et participer à des événements incroyables</p>
+    </div>
+</section>
+
+<!-- Registration Form -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <p><strong>Il y a des erreurs dans votre formulaire:</strong></p>
+                            {{ form.errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Prénom</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="text-danger">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Nom</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="text-danger">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Adresse email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Nom d'utilisateur</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <div class="text-danger">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">Mot de passe</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                <div class="text-danger">{{ form.password1.errors }}</div>
+                                {% endif %}
+                                <div class="form-text small">
+                                    Votre mot de passe doit contenir au moins 8 caractères et ne peut pas être
+                                    entièrement numérique.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmation du mot de
+                                    passe</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                <div class="text-danger">{{ form.password2.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Je m'inscris en tant que:</label>
+                            <div class="d-flex gap-4">
+                                {% for radio in form.user_type %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if form.user_type.errors %}
+                            <div class="text-danger">{{ form.user_type.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Créer un compte</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4 bg-light border-0">
+                <div class="card-body text-center">
+                    <p class="mb-0">Vous avez déjà un compte? <a href="{% url 'client_login' %}">Connectez-vous ici</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

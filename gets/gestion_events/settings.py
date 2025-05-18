@@ -30,8 +30,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     
-    # Custom apps
-    'gestion_app',
+    # Custom apps - use this format to ensure proper initialization
+    'gestion_app.apps.GestionAppConfig',  # Make sure this is correct
 ]
 
 MIDDLEWARE = [

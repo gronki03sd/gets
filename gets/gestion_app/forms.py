@@ -1,21 +1,28 @@
+# For forms.py - fix the import timing issue
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
-from django.contrib.auth import get_user_model
-from .models import (
-    Participant, Activite, Responsable, Animateur, 
-    Infrastructure, Materiel, Inscription
-)
 
-User = get_user_model()
+# Don't import models at the module level directly
+# Instead, get them inside the class definitions
 
-# User Authentication Forms
+# User model should be imported like this to avoid early loading:
+User = None
+def get_user_model_safely():
+    global User
+    if User is None:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+    return User
+
+# Admin User Authentication Forms
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     
     class Meta:
-        model = User
+        model = get_user_model_safely()
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'role']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -33,7 +40,6 @@ class UserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
-from django.contrib.auth.forms import PasswordChangeForm
 
 class UserPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
@@ -42,9 +48,63 @@ class UserPasswordChangeForm(PasswordChangeForm):
         self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
 
+class ClientRegistrationForm(UserCreationForm):
+    """Registration form for clients (participants and animators)"""
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    user_type = forms.ChoiceField(
+        choices=[('participant', 'Participant'), ('animateur', 'Moniteur')],
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        initial='participant'
+    )
+    
+    class Meta:
+        model = get_user_model_safely()
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(ClientRegistrationForm, self).__init__(*args, **kwargs)
+        # Add bootstrap classes to password fields
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'staff'  # Default role for all client registrations
+        
+        if commit:
+            user.save()
+            
+            # Import these here to avoid circular imports
+            from django.utils import timezone
+            from .models import Participant, Animateur
+            
+            # Create participant or animator profile based on selection
+            if self.cleaned_data['user_type'] == 'participant':
+                Participant.objects.create(
+                    nom=self.cleaned_data['last_name'],
+                    prenom=self.cleaned_data['first_name'],
+                    date_naissance=timezone.now().date(),  # Default value, can be updated later
+                    email=self.cleaned_data['email'],
+                    created_by=user
+                )
+            elif self.cleaned_data['user_type'] == 'animateur':
+                Animateur.objects.create(
+                    nom=self.cleaned_data['last_name'],
+                    prenom=self.cleaned_data['first_name'],
+                    email=self.cleaned_data['email'],
+                    telephone='',  # Default empty value, can be updated later
+                    created_by=user
+                )
+                
+        return user
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = get_user_model_safely()
         fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'profile_image']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -59,6 +119,7 @@ class UserProfileForm(forms.ModelForm):
 # Main Application Forms
 class ParticipantForm(forms.ModelForm):
     class Meta:
+        from .models import Participant
         model = Participant
         fields = ['nom', 'prenom', 'date_naissance', 'adresse', 'telephone', 'email']
         widgets = {
@@ -91,15 +152,14 @@ class ActiviteSearchForm(forms.Form):
     )
 
 
-
 from django.forms import ModelForm, DateTimeInput, SelectMultiple
-from .models import Activite, Responsable, Infrastructure, Animateur, Materiel
 
 class CustomDateTimeInput(DateTimeInput):
     input_type = 'datetime-local'
 
 class ActiviteForm(ModelForm):
     class Meta:
+        from .models import Activite
         model = Activite
         fields = ['nom', 'description', 'duree', 'date_debut', 'responsable', 'infrastructure', 
                   'capacite_max', 'animateurs', 'materiels']
@@ -141,6 +201,7 @@ class ActiviteForm(ModelForm):
 # Formulaires pour les matériels et animateurs à utiliser dans les vues inline
 class ActiviteMaterielForm(forms.ModelForm):
     class Meta:
+        from .models import Activite
         model = Activite.materiels.through
         fields = ['materiel', 'quantite_requise']
         widgets = {
@@ -150,6 +211,7 @@ class ActiviteMaterielForm(forms.ModelForm):
 
 class ActiviteAnimateurForm(forms.ModelForm):
     class Meta:
+        from .models import Activite
         model = Activite.animateurs.through
         fields = ['animateur']
         widgets = {
@@ -159,6 +221,7 @@ class ActiviteAnimateurForm(forms.ModelForm):
 
 class InscriptionForm(forms.ModelForm):
     class Meta:
+        from .models import Inscription
         model = Inscription
         fields = ['participant', 'activite', 'statut']
         widgets = {
@@ -166,10 +229,10 @@ class InscriptionForm(forms.ModelForm):
             'activite': forms.Select(attrs={'class': 'form-select'}),
             'statut': forms.Select(attrs={'class': 'form-select'}),
         }
-# Ajoutez ces classes à votre fichier forms.py existant
 
 class ResponsableForm(forms.ModelForm):
     class Meta:
+        from .models import Responsable
         model = Responsable
         fields = ['nom', 'prenom', 'specialite', 'telephone', 'email']
         widgets = {
@@ -183,6 +246,7 @@ class ResponsableForm(forms.ModelForm):
 
 class AnimateurForm(forms.ModelForm):
     class Meta:
+        from .models import Animateur
         model = Animateur
         fields = ['nom', 'prenom', 'competence', 'telephone', 'email']
         widgets = {
@@ -196,6 +260,7 @@ class AnimateurForm(forms.ModelForm):
 
 class InfrastructureForm(forms.ModelForm):
     class Meta:
+        from .models import Infrastructure
         model = Infrastructure
         fields = ['nom', 'type', 'capacite', 'localisation', 'disponible']
         widgets = {
@@ -209,6 +274,7 @@ class InfrastructureForm(forms.ModelForm):
 
 class MaterielForm(forms.ModelForm):
     class Meta:
+        from .models import Materiel
         model = Materiel
         fields = ['nom', 'description', 'quantite_disponible']
         widgets = {
@@ -216,3 +282,104 @@ class MaterielForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'quantite_disponible': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+# New client-specific forms
+class ClientRegisterForm(UserCreationForm):
+    """Form for client user registration"""
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phone_number = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = get_user_model_safely()
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(ClientRegisterForm, self).__init__(*args, **kwargs)
+        # Add bootstrap classes to password fields
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        
+        # Set role to 'staff' by default for client users
+        self.initial['role'] = 'staff'
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'staff'  # Ensure client users are always 'staff' role
+        if commit:
+            user.save()
+        return user
+
+class ClientLoginForm(AuthenticationForm):
+    """Form for client login"""
+    username = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': "Nom d'utilisateur"
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Mot de passe'
+    }))
+    
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(request=request, *args, **kwargs)
+
+class ClientProfileForm(forms.ModelForm):
+    """Form for client profile editing"""
+    class Meta:
+        model = get_user_model_safely()
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'profile_image']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+class ClientInscriptionForm(forms.ModelForm):
+    """Form for client event registration"""
+    class Meta:
+        from .models import Inscription
+        model = Inscription
+        fields = ['activite']
+        widgets = {
+            'activite': forms.HiddenInput(),  # Hidden because we'll set this from the URL
+        }
+
+class ContactForm(forms.Form):
+    """Contact form for clients"""
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Votre nom'
+    }))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Votre email'
+    }))
+    subject = forms.CharField(max_length=200, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Sujet'
+    }))
+    message = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'placeholder': 'Votre message',
+        'rows': 5
+    }))
+
+class EventSearchForm(forms.Form):
+    """Form for searching events on the client side"""
+    search = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control me-2',
+        'placeholder': 'Rechercher un événement...',
+        'aria-label': 'Search'
+    }))
+    date = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        'class': 'form-control',
+        'type': 'date'
+    }))

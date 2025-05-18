@@ -1,0 +1,189 @@
+{% extends 'client/base_client.html' %}
+
+{% block title %}{{ activity.nom }} - GETS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'client_home' %}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'client_event_list' %}">Événements</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ activity.nom }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Event Details -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h1 class="card-title display-5 mb-3">{{ activity.nom }}</h1>
+
+                    <div class="mb-4">
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-calendar-alt me-2"></i> {{ activity.date_debut|date:"l d F Y" }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-clock me-2"></i> {{ activity.date_debut|date:"H:i" }} - {{
+                            activity.date_fin|date:"H:i" }} (Durée: {{ activity.duree }} minutes)
+                        </p>
+                        {% if activity.infrastructure %}
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-map-marker-alt me-2"></i> {{ activity.infrastructure.nom }} - {{
+                            activity.infrastructure.localisation }}
+                        </p>
+                        {% endif %}
+                        {% if activity.capacite_max %}
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-users me-2"></i> Capacité maximum: {{ activity.capacite_max }} personnes
+                        </p>
+                        {% endif %}
+                        {% if activity.responsable %}
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-user-tie me-2"></i> Responsable: {{ activity.responsable.prenom }} {{
+                            activity.responsable.nom }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Description</h5>
+                    <div class="mb-4">
+                        {% if activity.description %}
+                        <p>{{ activity.description|linebreaks }}</p>
+                        {% else %}
+                        <p class="text-muted">Aucune description disponible pour cet événement.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Animateurs -->
+                    {% if activity.animateurs.all %}
+                    <h5 class="mt-4 mb-3">Animateurs</h5>
+                    <div class="row mb-4">
+                        {% for animateur in activity.animateurs.all %}
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width: 50px; height: 50px;">
+                                        <i class="fas fa-user text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">{{ animateur.prenom }} {{ animateur.nom }}</h6>
+                                    {% if animateur.competence %}
+                                    <small class="text-muted">{{ animateur.competence }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Matériel -->
+                    {% if activity.materiels.all %}
+                    <h5 class="mt-4 mb-3">Matériel fourni</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for materiel in activity.materiels.all %}
+                        <li class="list-group-item bg-transparent px-0">
+                            <i class="fas fa-tools me-2 text-primary"></i> {{ materiel.nom }}
+                            {% if materiel.description %}
+                            <p class="text-muted small ms-4 mb-0">{{ materiel.description|truncatechars:100 }}</p>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Registration Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Inscription</h5>
+
+                    {% with places=activity.nombre_places_restantes %}
+                    {% if places == 0 %}
+                    <div class="alert alert-danger mb-3">
+                        <i class="fas fa-exclamation-circle me-2"></i> Cet événement est complet.
+                    </div>
+                    {% elif places <= 3 %} <div class="alert alert-warning mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Plus que {{ places }} places disponibles !
+                </div>
+                {% else %}
+                <div class="alert alert-success mb-3">
+                    <i class="fas fa-check-circle me-2"></i> {{ places }} places disponibles.
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                {% if user.is_authenticated %}
+                {% if user_already_registered %}
+                <div class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle me-2"></i> Vous êtes déjà inscrit à cet événement.
+                </div>
+                <a href="{% url 'client_dashboard' %}" class="btn btn-outline-primary w-100">Voir mes inscriptions</a>
+                {% elif activity.est_complete %}
+                <button class="btn btn-secondary w-100" disabled>Événement complet</button>
+                {% elif can_register %}
+                <a href="{% url 'client_event_register' activity.id %}" class="btn btn-primary w-100">S'inscrire</a>
+                {% else %}
+                <div class="alert alert-warning mb-3">
+                    <i class="fas fa-info-circle me-2"></i> Veuillez compléter vos informations de participant pour vous
+                    inscrire.
+                </div>
+                <a href="{% url 'client_update_participant' %}" class="btn btn-primary w-100">Compléter mon profil</a>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle me-2"></i> Vous devez être connecté pour vous inscrire.
+                </div>
+                <a href="{% url 'login' %}" class="btn btn-primary w-100">Se connecter</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Event Details Summary -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">À propos de l'événement</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span><i class="fas fa-calendar-day me-2 text-primary"></i> Date</span>
+                        <span class="text-muted">{{ activity.date_debut|date:"d/m/Y" }}</span>
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span><i class="fas fa-clock me-2 text-primary"></i> Heure</span>
+                        <span class="text-muted">{{ activity.date_debut|date:"H:i" }}</span>
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span><i class="fas fa-hourglass-half me-2 text-primary"></i> Durée</span>
+                        <span class="text-muted">{{ activity.duree }} minutes</span>
+                    </li>
+                    {% if activity.infrastructure %}
+                    <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span><i class="fas fa-map-marker-alt me-2 text-primary"></i> Lieu</span>
+                        <span class="text-muted">{{ activity.infrastructure.nom }}</span>
+                    </li>
+                    {% endif %}
+                    {% if activity.capacite_max %}
+                    <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span><i class="fas fa-users me-2 text-primary"></i> Places</span>
+                        <span class="text-muted">{{ activity.nombre_places_restantes }}/{{ activity.capacite_max
+                            }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

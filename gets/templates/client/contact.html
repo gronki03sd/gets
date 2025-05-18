@@ -1,0 +1,88 @@
+{% extends 'client/base.html' %}
+
+{% block title %}Contact Us - EventHub{% endblock %}
+
+{% block content %}
+<!-- Contact Header -->
+<section class="bg-light py-5 mb-4">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-2">Contact Us</h1>
+        <p class="lead">We'd love to hear from you</p>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="mb-4">Get in Touch</h2>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="What is this regarding?">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="5"
+                                placeholder="How can we help you?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                    <div class="alert alert-info mt-3">
+                        <p class="mb-0"><i class="fas fa-info-circle me-2"></i> This form is for demonstration purposes
+                            only. To actually send a message, please use the admin area.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="mb-4">Contact Information</h2>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-map-marker-alt me-2 text-primary"></i>Address</h5>
+                        <p class="ms-4 mb-0">123 Event Street<br>Casablanca, Morocco</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-phone me-2 text-primary"></i>Phone</h5>
+                        <p class="ms-4 mb-0">+212 5XX-XXXXXX<br>Monday - Friday, 9am - 6pm</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-envelope me-2 text-primary"></i>Email</h5>
+                        <p class="ms-4 mb-0">info@eventhub.com<br>support@eventhub.com</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-clock me-2 text-primary"></i>Working Hours</h5>
+                        <p class="ms-4 mb-0">Monday - Friday: 9am - 6pm<br>Saturday: 10am - 4pm<br>Sunday: Closed</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5>Follow Us</h5>
+                        <div class="d-flex gap-3 mt-2">
+                            <a href="#" class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-outline-info"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-danger"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="btn btn-outline-dark"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

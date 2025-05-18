@@ -1,0 +1,89 @@
+/* Main styles */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #6a5ddf 0%, #5c50dc 100%);
+    color: white;
+    padding: 5rem 0;
+    border-radius: 0 0 1rem 1rem;
+    margin-bottom: 4rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+    background-color: #212529;
+    color: white;
+    padding: 3rem 0;
+    margin-top: 5rem;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: white;
+}
+
+/* Event cards */
+.event-card .card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+.event-placeholder {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+/* Badge styles */
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #6a5ddf;
+    border-color: #6a5ddf;
+}
+
+.btn-primary:hover {
+    background-color: #5c50dc;
+    border-color: #5c50dc;
+}
+
+/* Detail page */
+.event-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+.organizer-card {
+    border-radius: 0.5rem;
+}
+
+.team-member {
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,43 @@
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5 class="text-uppercase mb-3">GETS</h5>
+                <p>Plateforme de gestion d'événements efficace et intuitive. Trouvez les meilleurs événements et gérez
+                    facilement vos participations.</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5 class="text-uppercase mb-3">Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'client_home' %}" class="text-white text-decoration-none">Accueil</a></li>
+                    <li><a href="{% url 'client_event_list' %}" class="text-white text-decoration-none">Événements</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'client_dashboard' %}" class="text-white text-decoration-none">Mon tableau de
+                            bord</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}" class="text-white text-decoration-none">Connexion</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5 class="text-uppercase mb-3">Contact</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Avenue de l'Exemple, 75000 Paris</li>
+                    <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
+                    <li><i class="fas fa-envelope me-2"></i> contact@gets-events.com</li>
+                </ul>
+                <div class="mt-3">
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center">
+            <p class="mb-0">&copy; {% now "Y" %} GETS - Tous droits réservés</p>
+        </div>
+    </div>
+</footer>

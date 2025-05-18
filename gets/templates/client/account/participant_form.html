@@ -1,0 +1,134 @@
+{% extends 'client/base_client.html' %}
+
+{% block title %}Informations Participant - GETS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 mb-3">Informations participant</h1>
+            <p class="lead">Complétez vos informations pour pouvoir vous inscrire aux événements.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar with user info and links -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" alt="Profile" class="rounded-circle mb-3" width="100"
+                        height="100">
+                    {% else %}
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 100px; height: 100px;">
+                        <i class="fas fa-user fa-3x text-primary"></i>
+                    </div>
+                    {% endif %}
+                    <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'client_dashboard' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                    </a>
+                    <a href="{% url 'client_profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i> Modifier mon profil
+                    </a>
+                    <a href="{% url 'client_update_participant' %}"
+                        class="list-group-item list-group-item-action active">
+                        <i class="fas fa-address-card me-2"></i> Informations participant
+                    </a>
+                    <a href="{% url 'client_event_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar-alt me-2"></i> Voir les événements
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Participant Form -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        {% if is_new %}
+                        Créer mon profil participant
+                        {% else %}
+                        Modifier mes informations
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Form Errors -->
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <p><strong>Des erreurs ont été trouvées dans le formulaire :</strong></p>
+                            <ul>
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            <!-- Nom -->
+                            <div class="col-md-6">
+                                <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                                {{ form.nom }}
+                            </div>
+
+                            <!-- Prénom -->
+                            <div class="col-md-6">
+                                <label for="{{ form.prenom.id_for_label }}" class="form-label">Prénom</label>
+                                {{ form.prenom }}
+                            </div>
+
+                            <!-- Date de naissance -->
+                            <div class="col-md-6">
+                                <label for="{{ form.date_naissance.id_for_label }}" class="form-label">Date de
+                                    naissance</label>
+                                {{ form.date_naissance }}
+                            </div>
+
+                            <!-- Téléphone -->
+                            <div class="col-md-6">
+                                <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                                {{ form.telephone }}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                {{ form.email }}
+                            </div>
+
+                            <!-- Adresse -->
+                            <div class="col-md-6">
+                                <label for="{{ form.adresse.id_for_label }}" class="form-label">Adresse</label>
+                                {{ form.adresse }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                {% if is_new %}
+                                Créer mon profil
+                                {% else %}
+                                Enregistrer les modifications
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
