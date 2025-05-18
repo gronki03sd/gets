@@ -1,0 +1,172 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}{{ infrastructure.nom }} - Infrastructure{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:infrastructure_list' %}">Infrastructures</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ infrastructure.nom }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ infrastructure.nom }}</h1>
+        <div>
+            <a href="{% url 'admin_portal:infrastructure_edit' infrastructure.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            <a href="{% url 'admin_portal:infrastructure_delete' infrastructure.pk %}"
+                class="btn btn-danger ms-2 delete-confirm">
+                <i class="fas fa-trash-alt me-2"></i>Supprimer
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-building me-2"></i>Informations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 100px; height: 100px;">
+                            <i class="fas fa-building fa-3x text-secondary"></i>
+                        </div>
+                        <h4 class="mb-0">{{ infrastructure.nom }}</h4>
+                        <p class="text-muted">{{ infrastructure.type }}</p>
+                    </div>
+
+                    <hr>
+
+                    <dl class="mb-0">
+                        <dt>Capacité</dt>
+                        <dd>
+                            {% if infrastructure.capacite %}
+                            {{ infrastructure.capacite }} personnes
+                            {% else %}
+                            <span class="text-muted">Non spécifiée</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="mt-3">Localisation</dt>
+                        <dd>
+                            {% if infrastructure.localisation %}
+                            {{ infrastructure.localisation }}
+                            {% else %}
+                            <span class="text-muted">Non spécifiée</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="mt-3">Disponibilité</dt>
+                        <dd>
+                            {% if infrastructure.disponible %}
+                            <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                            <span class="badge bg-danger">Non disponible</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_portal:activite_create' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar-plus me-2"></i>Créer un événement ici
+                        </a>
+                        <button class="btn btn-outline-secondary"
+                            onclick="toggleAvailability({{ infrastructure.pk }}, {{ infrastructure.disponible|lower }})">
+                            {% if infrastructure.disponible %}
+                            <i class="fas fa-times-circle me-2"></i>Marquer comme non disponible
+                            {% else %}
+                            <i class="fas fa-check-circle me-2"></i>Marquer comme disponible
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-calendar-day me-2"></i>Événements ({{ activites|length
+                        }})</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Date</th>
+                                    <th>Heure</th>
+                                    <th>Durée</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activite in activites %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'admin_portal:activite_detail' activite.pk %}"
+                                            class="text-decoration-none fw-bold">
+                                            {{ activite.nom }}
+                                        </a>
+                                    </td>
+                                    <td>{{ activite.date_debut|date:"d/m/Y" }}</td>
+                                    <td>{{ activite.date_debut|date:"H:i" }}</td>
+                                    <td>{{ activite.duree }} min</td>
+                                    <td>
+                                        {% if activite.est_a_venir %}
+                                        {% if activite.est_complete %}
+                                        <span class="badge bg-danger">Complet</span>
+                                        {% else %}
+                                        <span class="badge bg-success">Places disponibles</span>
+                                        {% endif %}
+                                        {% else %}
+                                        <span class="badge bg-secondary">Terminé</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_portal:activite_detail' activite.pk %}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-info-circle me-2"></i>Aucun événement utilise cette
+                                            infrastructure.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function toggleAvailability(id, currentStatus) {
+        // Cette fonction simule le changement de disponibilité
+        // Dans une implémentation réelle, il faudrait faire une requête AJAX
+        const newStatus = !currentStatus;
+        alert(`Disponibilité modifiée : ${newStatus ? 'Disponible' : 'Non disponible'}`);
+        location.reload(); // Recharger la page pour voir les changements
+    }
+</script>
+{% endblock %}
+{% endblock %}

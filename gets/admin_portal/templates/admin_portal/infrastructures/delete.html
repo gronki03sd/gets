@@ -1,0 +1,93 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Supprimer {{ infrastructure.nom }} - Infrastructure{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:infrastructure_list' %}">Infrastructures</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}">{{
+                    infrastructure.nom }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Supprimer</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-trash-alt me-2 text-danger"></i>Supprimer l'infrastructure</h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">Confirmation de suppression</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="alert-heading">Attention !</h5>
+                                <p>Vous êtes sur le point de supprimer définitivement l'infrastructure <strong>{{
+                                        infrastructure.nom }}</strong>. Cette action est irréversible.</p>
+                                {% if infrastructure.activites.count > 0 %}
+                                <p class="mb-0 text-danger"><strong>Note:</strong> Cette infrastructure est utilisée par
+                                    {{ infrastructure.activites.count }} événement(s). La suppression de
+                                    l'infrastructure affectera ces événements!</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3">Détails de l'infrastructure :</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Nom</dt>
+                        <dd class="col-sm-8">{{ infrastructure.nom }}</dd>
+
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">{{ infrastructure.type }}</dd>
+
+                        <dt class="col-sm-4">Capacité</dt>
+                        <dd class="col-sm-8">{% if infrastructure.capacite %}{{ infrastructure.capacite }} personnes{%
+                            else %}Non spécifiée{% endif %}</dd>
+
+                        <dt class="col-sm-4">Localisation</dt>
+                        <dd class="col-sm-8">{{ infrastructure.localisation|default:"Non spécifiée" }}</dd>
+
+                        <dt class="col-sm-4">Disponibilité</dt>
+                        <dd class="col-sm-8">
+                            {% if infrastructure.disponible %}
+                            <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                            <span class="badge bg-danger">Non disponible</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Événements</dt>
+                        <dd class="col-sm-8">{{ infrastructure.activites.count }}</dd>
+                    </dl>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}"
+                                class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Confirmer la suppression
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

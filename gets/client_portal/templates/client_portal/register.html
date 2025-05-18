@@ -1,0 +1,113 @@
+{% extends "client_portal/base.html" %}
+
+{% block title %}Inscription - GETS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Créer un compte</h2>
+                        <p class="text-muted">Rejoignez-nous pour découvrir et participer à des événements</p>
+                    </div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Erreurs dans le formulaire</h5>
+                        {{ form.non_field_errors }}
+                        <ul class="mb-0">
+                            {% for field in form %}
+                            {% if field.errors %}
+                            <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Prénom</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Nom</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Nom d'utilisateur</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Téléphone
+                                (optionnel)</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">Mot de passe</label>
+                            {{ form.password1 }}
+                            <div class="form-text">
+                                <ul class="mb-0 ps-3 small">
+                                    <li>Votre mot de passe doit contenir au moins 8 caractères.</li>
+                                    <li>Votre mot de passe ne peut pas être trop similaire à vos autres informations
+                                        personnelles.</li>
+                                    <li>Votre mot de passe ne peut pas être un mot de passe couramment utilisé.</li>
+                                    <li>Votre mot de passe ne peut pas être entièrement numérique.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmer le mot de
+                                passe</label>
+                            {{ form.password2 }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label d-block">Type d'utilisateur</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="{{ form.user_type.name }}"
+                                    id="type-participant" value="participant" {% if form.user_type.value=='participant'
+                                    %}checked{% endif %}>
+                                <label class="form-check-label" for="type-participant">Participant</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="{{ form.user_type.name }}"
+                                    id="type-animateur" value="animateur" {% if form.user_type.value=='animateur'
+                                    %}checked{% endif %}>
+                                <label class="form-check-label" for="type-animateur">Moniteur</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms-checkbox" required>
+                            <label class="form-check-label" for="terms-checkbox">J'accepte les <a href="#"
+                                    class="text-decoration-none">conditions d'utilisation</a> et la <a href="#"
+                                    class="text-decoration-none">politique de confidentialité</a></label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>S'inscrire
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Vous avez déjà un compte ? <a href="{% url 'client_portal:login' %}"
+                                class="text-decoration-none">Connectez-vous</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Responsables - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-user-tie me-2"></i>Responsables</h1>
+        <a href="{% url 'admin_portal:responsable_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Ajouter un responsable
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Recherche</h5>
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" class="form-control" placeholder="Rechercher un responsable..."
+                    aria-label="Rechercher" hx-get="{% url 'admin_portal:responsable_search' %}"
+                    hx-trigger="keyup changed delay:500ms" hx-target="#responsable-list" name="q">
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Liste des responsables</h5>
+        </div>
+        <div class="card-body p-0">
+            <div id="responsable-list">
+                {% include "admin_portal/responsables/partials/responsable_list.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

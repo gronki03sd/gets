@@ -1,0 +1,156 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Nouvelle inscription - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Nouvelle inscription</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-clipboard-check me-2"></i>Nouvelle inscription</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Formulaire d'inscription</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Erreurs dans le
+                                formulaire</h5>
+                            {{ form.non_field_errors }}
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                {% if field.errors %}
+                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.participant.id_for_label }}" class="form-label">Participant</label>
+                                {{ form.participant }}
+                                {% if form.participant.help_text %}
+                                <div class="form-text">{{ form.participant.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.activite.id_for_label }}" class="form-label">Événement</label>
+                                {{ form.activite }}
+                                <div id="activite-info" class="form-text mt-2">
+                                    Sélectionnez un événement pour voir les détails.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.statut.id_for_label }}" class="form-label">Statut</label>
+                            {{ form.statut }}
+                            {% if form.statut.help_text %}
+                            <div class="form-text">{{ form.statut.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if 'activite_id' in request.GET %}
+                        <input type="hidden" name="activite_id" value="{{ request.GET.activite_id }}">
+                        {% endif %}
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% if 'activite_id' in request.GET %}{% url 'admin_portal:activite_detail' request.GET.activite_id %}{% elif 'participant_id' in request.GET %}{% url 'admin_portal:participant_detail' request.GET.participant_id %}{% else %}{% url 'admin_portal:dashboard' %}{% endif %}"
+                                class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer l'inscription
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Aide</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Informations sur l'inscription</h6>
+                    <ul>
+                        <li>Sélectionnez un <strong>participant</strong> à inscrire.</li>
+                        <li>Choisissez l'<strong>événement</strong> auquel vous souhaitez l'inscrire.</li>
+                        <li>Le <strong>statut</strong> permet de définir l'état de l'inscription :</li>
+                        <ul>
+                            <li><strong>Inscrit</strong> : Le participant est confirmé.</li>
+                            <li><strong>En attente</strong> : Le participant est sur liste d'attente.</li>
+                            <li><strong>Annulé</strong> : L'inscription a été annulée.</li>
+                        </ul>
+                    </ul>
+                    <hr>
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-lightbulb me-2"></i> Si l'événement est complet, les nouvelles inscriptions
+                        seront automatiquement en attente.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const activiteSelect = document.getElementById('{{ form.activite.id_for_label }}');
+        const activiteInfo = document.getElementById('activite-info');
+
+        // Fonction pour mettre à jour les informations de l'événement
+        function updateActiviteInfo() {
+            const selectedOption = activiteSelect.options[activiteSelect.selectedIndex];
+            if (selectedOption.value) {
+                const eventId = selectedOption.value;
+                const eventText = selectedOption.text;
+
+                // Simuler une requête AJAX pour obtenir des informations sur l'événement
+                // En production, remplacez cela par une vraie requête AJAX
+                setTimeout(() => {
+                    activiteInfo.innerHTML = `
+                        <div class="alert alert-info p-2 mb-0">
+                            <strong>${eventText}</strong>
+                            <div>Consultez les détails de l'événement pour plus d'informations.</div>
+                        </div>
+                    `;
+                }, 300);
+            } else {
+                activiteInfo.innerHTML = "Sélectionnez un événement pour voir les détails.";
+            }
+        }
+
+        // Mettre à jour les informations lors du changement d'événement
+        activiteSelect.addEventListener('change', updateActiviteInfo);
+
+        // Mettre à jour les informations au chargement si un événement est déjà sélectionné
+        if (activiteSelect.value) {
+            updateActiviteInfo();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

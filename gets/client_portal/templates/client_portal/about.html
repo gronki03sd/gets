@@ -1,0 +1,135 @@
+{% extends "client_portal/base.html" %}
+
+{% block title %}À propos - GETS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold mb-3">À propos de GETS</h1>
+            <p class="lead">Une plateforme de gestion d'événements simplifiée et intuitive</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="mb-4">Notre Mission</h2>
+                    <p>GETS (Gestion des Événements et Inscriptions) est né d'une idée simple : rendre la gestion des
+                        événements et des inscriptions accessible à tous. Que vous soyez un participant à la recherche
+                        d'activités intéressantes ou un administrateur gérant des groupes et des ressources, notre
+                        plateforme vous offre une solution complète.</p>
+
+                    <p>Notre mission est de créer un espace où organisateurs et participants peuvent se rencontrer
+                        facilement, dans un environnement sécurisé et convivial.</p>
+
+                    <h3 class="mt-5 mb-3">Notre Approche</h3>
+                    <p>Nous croyons en la simplicité et l'efficacité. C'est pourquoi notre plateforme a été conçue avec
+                        une interface intuitive qui permet de :</p>
+                    <ul>
+                        <li>Parcourir et rechercher des événements en quelques clics</li>
+                        <li>S'inscrire facilement aux activités qui vous intéressent</li>
+                        <li>Suivre vos inscriptions depuis votre espace personnel</li>
+                        <li>Gérer efficacement les ressources et les participants (pour les administrateurs)</li>
+                    </ul>
+
+                    <h3 class="mt-5 mb-3">Notre Engagement</h3>
+                    <p>Nous nous engageons à offrir :</p>
+                    <ul>
+                        <li><strong>Qualité</strong> - Des événements soigneusement sélectionnés</li>
+                        <li><strong>Sécurité</strong> - Protection de vos données personnelles</li>
+                        <li><strong>Accessibilité</strong> - Une plateforme disponible sur tous les appareils</li>
+                        <li><strong>Support</strong> - Une équipe à l'écoute de vos besoins</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Chiffres clés</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Année de création</span>
+                            <span class="badge bg-primary rounded-pill">2023</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Événements organisés</span>
+                            <span class="badge bg-primary rounded-pill">500+</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Utilisateurs actifs</span>
+                            <span class="badge bg-primary rounded-pill">2000+</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Taux de satisfaction</span>
+                            <span class="badge bg-success rounded-pill">98%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Nous contacter</h3>
+                    <p>Vous avez des questions ou des suggestions ? Notre équipe est là pour vous aider.</p>
+                    <a href="{% url 'client_portal:contact' %}" class="btn btn-primary w-100">
+                        <i class="fas fa-envelope me-2"></i>Nous contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">Notre Équipe</h2>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 text-center">
+                <div class="card-body p-4">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 120px; height: 120px;">
+                        <i class="fas fa-user fa-4x text-primary"></i>
+                    </div>
+                    <h4>Jean Dupont</h4>
+                    <p class="text-muted">Fondateur & Directeur</p>
+                    <p>Expert en gestion d'événements avec plus de 10 ans d'expérience dans le domaine.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 text-center">
+                <div class="card-body p-4">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 120px; height: 120px;">
+                        <i class="fas fa-user fa-4x text-primary"></i>
+                    </div>
+                    <h4>Marie Laurent</h4>
+                    <p class="text-muted">Responsable Technique</p>
+                    <p>Spécialiste en développement web et expérience utilisateur pour des plateformes conviviales.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 text-center">
+                <div class="card-body p-4">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 120px; height: 120px;">
+                        <i class="fas fa-user fa-4x text-primary"></i>
+                    </div>
+                    <h4>Ahmed Bensaid</h4>
+                    <p class="text-muted">Responsable des Opérations</p>
+                    <p>Expert en logistique et coordination d'événements pour assurer un service de qualité.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

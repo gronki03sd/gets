@@ -1,0 +1,106 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Ajouter du matériel - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:materiel_list' %}">Matériel</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ajouter du matériel</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-plus me-2"></i>Ajouter du matériel</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Informations du matériel</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Erreurs dans le
+                                formulaire</h5>
+                            {{ form.non_field_errors }}
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                {% if field.errors %}
+                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                            {{ form.nom }}
+                            {% if form.nom.help_text %}
+                            <div class="form-text">{{ form.nom.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.help_text %}
+                            <div class="form-text">{{ form.description.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.quantite_disponible.id_for_label }}" class="form-label">Quantité
+                                disponible</label>
+                            {{ form.quantite_disponible }}
+                            {% if form.quantite_disponible.help_text %}
+                            <div class="form-text">{{ form.quantite_disponible.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'admin_portal:materiel_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Aide</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Informations importantes</h6>
+                    <ul>
+                        <li>Le <strong>nom</strong> doit être unique et descriptif.</li>
+                        <li>La <strong>description</strong> permet de détailler les caractéristiques du matériel.</li>
+                        <li>La <strong>quantité disponible</strong> indique le nombre d'unités de ce matériel
+                            disponibles pour les événements.</li>
+                    </ul>
+                    <hr>
+                    <p class="mb-0">Après avoir créé le matériel, vous pourrez l'assigner à des événements.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

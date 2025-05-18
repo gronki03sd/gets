@@ -1,0 +1,270 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}{{ activite.nom }} - Détails{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:activite_list' %}">Événements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ activite.nom }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ activite.nom }}</h1>
+        <div>
+            <a href="{% url 'admin_portal:activite_edit' activite.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            <a href="{% url 'admin_portal:activite_delete' activite.pk %}" class="btn btn-danger ms-2 delete-confirm">
+                <i class="fas fa-trash-alt me-2"></i>Supprimer
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Informations générales -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Informations générales</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Date</dt>
+                                <dd>{{ activite.date_debut|date:"l j F Y" }}</dd>
+
+                                <dt>Heure</dt>
+                                <dd>{{ activite.date_debut|date:"H:i" }}</dd>
+
+                                <dt>Durée</dt>
+                                <dd>{{ activite.duree }} minutes</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Responsable</dt>
+                                <dd>{% if activite.responsable %}
+                                    <a href="{% url 'admin_portal:responsable_detail' activite.responsable.pk %}">
+                                        {{ activite.responsable }}
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">Non spécifié</span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt>Infrastructure</dt>
+                                <dd>{% if activite.infrastructure %}
+                                    <a href="{% url 'admin_portal:infrastructure_detail' activite.infrastructure.pk %}">
+                                        {{ activite.infrastructure }}
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">Non spécifiée</span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt>Capacité</dt>
+                                <dd>
+                                    {% if activite.capacite_max %}
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">{{ activite.inscriptions.count }}/{{ activite.capacite_max }}
+                                        </div>
+                                        <div class="progress flex-grow-1" style="height: 8px; width: 120px;">
+                                            <div class="progress-bar {% if activite.est_complete %}bg-danger{% else %}bg-success{% endif %}"
+                                                role="progressbar"
+                                                style="width: {% widthratio activite.inscriptions.count activite.capacite_max 100 %}%">
+                                            </div>
+                                        </div>
+                                        {% if activite.est_complete %}
+                                        <span class="badge bg-danger ms-2">Complet</span>
+                                        {% else %}
+                                        <span class="badge bg-success ms-2">{{ activite.nombre_places_restantes }}
+                                            places restantes</span>
+                                        {% endif %}
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted">Non limitée ({{ activite.inscriptions.count }}
+                                        inscrits)</span>
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h6>Description</h6>
+                    <div class="mb-0">
+                        {% if activite.description %}
+                        <p>{{ activite.description|linebreaks }}</p>
+                        {% else %}
+                        <p class="text-muted">Aucune description disponible.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des inscrits -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0"><i class="fas fa-users me-2"></i>Participants inscrits ({{
+                        inscriptions|length }})</h5>
+                    <a href="{% url 'admin_portal:inscription_create' %}?activite_id={{ activite.pk }}"
+                        class="btn btn-sm btn-primary">
+                        <i class="fas fa-user-plus me-1"></i>Ajouter un participant
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Date d'inscription</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inscription in inscriptions %}
+                                <tr>
+                                    <td>{{ inscription.participant.nom }}</td>
+                                    <td>{{ inscription.participant.prenom }}</td>
+                                    <td>{{ inscription.participant.email|default:"-" }}</td>
+                                    <td>{{ inscription.date_inscription|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        {% if inscription.statut == 'inscrit' %}
+                                        <span class="badge bg-success">Inscrit</span>
+                                        {% elif inscription.statut == 'en_attente' %}
+                                        <span class="badge bg-warning">En attente</span>
+                                        {% elif inscription.statut == 'annule' %}
+                                        <span class="badge bg-danger">Annulé</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'admin_portal:participant_detail' inscription.participant.pk %}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'admin_portal:inscription_edit' inscription.pk %}"
+                                                class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'admin_portal:inscription_delete' inscription.pk %}"
+                                                class="btn btn-sm btn-outline-danger delete-confirm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-info-circle me-2"></i>Aucun participant inscrit.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Animateurs -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-user-friends me-2"></i>Animateurs</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for animateur in activite.animateurs.all %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url 'admin_portal:animateur_detail' animateur.pk %}"
+                                        class="text-decoration-none">
+                                        {{ animateur.prenom }} {{ animateur.nom }}
+                                    </a>
+                                    {% if animateur.competence %}
+                                    <div class="text-muted small">{{ animateur.competence }}</div>
+                                    {% endif %}
+                                </div>
+                                <a href="tel:{{ animateur.telephone }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-phone"></i>
+                                </a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle me-2"></i>Aucun animateur assigné.
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Matériel -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-toolbox me-2"></i>Matériel</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for materiel_item in materiels %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url 'admin_portal:materiel_detail' materiel_item.materiel.pk %}"
+                                        class="text-decoration-none">
+                                        {{ materiel_item.materiel.nom }}
+                                    </a>
+                                    {% if materiel_item.materiel.description %}
+                                    <div class="text-muted small">{{ materiel_item.materiel.description|truncatechars:50
+                                        }}</div>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-primary">Qté: {{ materiel_item.quantite_requise }}</span>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle me-2"></i>Aucun matériel assigné.
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Métadonnées -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>Informations système</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt>ID de l'événement</dt>
+                        <dd>{{ activite.pk }}</dd>
+
+                        <dt>Créé par</dt>
+                        <dd>{{ activite.created_by|default:"Système" }}</dd>
+
+                        <dt>Date de création</dt>
+                        <dd>{{ activite.date_creation|date:"d/m/Y H:i"|default:"Inconnue" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

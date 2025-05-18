@@ -1,0 +1,222 @@
+{% extends "client_portal/base.html" %}
+
+{% block title %}{{ activity.nom }} - Détails de l'événement{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'client_portal:home' %}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'client_portal:event_list' %}">Événements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ activity.nom }}</li>
+        </ol>
+    </nav>
+
+    <div class="event-header mb-4">
+        <h1 class="mb-2">{{ activity.nom }}</h1>
+        <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-primary">
+                <i class="far fa-calendar-alt me-1"></i>{{ activity.date_debut|date:"j F Y" }}
+            </span>
+            <span class="badge bg-secondary">
+                <i class="far fa-clock me-1"></i>{{ activity.date_debut|date:"H:i" }} - {{ activity.date_fin|date:"H:i"
+                }}
+            </span>
+            {% if activity.est_complete %}
+            <span class="badge bg-danger">Complet</span>
+            {% else %}
+            {% if activity.nombre_places_restantes %}
+            <span class="badge bg-success">{{ activity.nombre_places_restantes }} places restantes</span>
+            {% else %}
+            <span class="badge bg-success">Places disponibles</span>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Description</h4>
+                    <p class="card-text">{{ activity.description|linebreaks }}</p>
+
+                    {% if activity.infrastructure %}
+                    <h4 class="mt-4 mb-3">Lieu</h4>
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5>{{ activity.infrastructure.nom }}</h5>
+                            <p class="mb-0">{{ activity.infrastructure.localisation }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if activity.responsable %}
+                    <h4 class="mt-4 mb-3">Responsable</h4>
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-user-tie fa-2x text-primary"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5>{{ activity.responsable.prenom }} {{ activity.responsable.nom }}</h5>
+                            {% if activity.responsable.specialite %}
+                            <p class="mb-0">{{ activity.responsable.specialite }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if activity.animateurs.all %}
+                    <h4 class="mt-4 mb-3">Animateurs</h4>
+                    <div class="row">
+                        {% for animateur in activity.animateurs.all %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 48px; height: 48px;">
+                                                <i class="fas fa-user text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="card-title mb-1">{{ animateur.prenom }} {{ animateur.nom }}</h5>
+                                            {% if animateur.competence %}
+                                            <p class="card-text small mb-0">{{ animateur.competence }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if activity.materiels.all %}
+                    <h4 class="mt-4 mb-3">Matériel fourni</h4>
+                    <ul class="list-group list-group-flush">
+                        {% for materiel in activity.materiels.all %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tools text-primary me-3"></i>
+                                <div>
+                                    <h5 class="mb-0">{{ materiel.nom }}</h5>
+                                    {% if materiel.description %}
+                                    <p class="mb-0 small text-muted">{{ materiel.description }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Inscription</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6>Détails de l'événement</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="far fa-calendar-alt me-2 text-primary"></i>{{
+                                activity.date_debut|date:"l j F Y" }}</li>
+                            <li class="mb-2"><i class="far fa-clock me-2 text-primary"></i>{{
+                                activity.date_debut|date:"H:i" }} - {{ activity.date_fin|date:"H:i" }}</li>
+                            <li><i class="fas fa-hourglass-half me-2 text-primary"></i>Durée: {{ activity.duree }}
+                                minutes</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        {% if activity.est_complete %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>Cet événement est complet.
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            {% if activity.nombre_places_restantes %}
+                            <i class="fas fa-info-circle me-2"></i>{{ activity.nombre_places_restantes }} places
+                            restantes !
+                            {% else %}
+                            <i class="fas fa-info-circle me-2"></i>Places disponibles !
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    {% if user_already_registered %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>Vous êtes déjà inscrit à cet événement.
+                    </div>
+                    <a href="{% url 'client_portal:dashboard' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-tachometer-alt me-2"></i>Voir mon tableau de bord
+                    </a>
+                    {% elif activity.est_complete %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="fas fa-ban me-2"></i>Événement complet
+                    </button>
+                    {% elif can_register %}
+                    <form method="post" action="{% url 'client_portal:event_register' activity.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-check-circle me-2"></i>S'inscrire à cet événement
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Complétez vos informations de participant pour
+                        vous inscrire.
+                    </div>
+                    <a href="{% url 'client_portal:participant_info' %}" class="btn btn-primary w-100">
+                        <i class="fas fa-user-edit me-2"></i>Compléter mon profil
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Connectez-vous pour vous inscrire à cet
+                        événement.
+                    </div>
+                    <a href="{% url 'client_portal:login' %}?next={{ request.path }}" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if similar_activities %}
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Événements similaires</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for similar in similar_activities %}
+                        <li class="list-group-item">
+                            <a href="{% url 'client_portal:event_detail' similar.pk %}" class="text-decoration-none">
+                                <h6 class="mb-1">{{ similar.nom }}</h6>
+                                <p class="text-muted small mb-0">
+                                    <i class="far fa-calendar-alt me-1"></i>{{ similar.date_debut|date:"j F Y" }}
+                                    <i class="far fa-clock ms-2 me-1"></i>{{ similar.date_debut|date:"H:i" }}
+                                </p>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Mon Profil - Administration{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Mon Profil</li>
+                </ol>
+            </nav>
+            <h1 class="mb-4"><i class="fas fa-user-circle me-2"></i>Mon Profil</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" class="rounded-circle mb-3" width="150" height="150"
+                        style="object-fit: cover;" alt="{{ user.username }}">
+                    {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 150px; height: 150px;">
+                        <i class="fas fa-user fa-5x text-secondary"></i>
+                    </div>
+                    {% endif %}
+                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-muted">{{ user.username }}</p>
+                    <div class="badge bg-primary mb-3">{{ user.get_role_display }}</div>
+                    <div class="d-grid">
+                        <a href="{% url 'admin_portal:change_password' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-key me-2"></i>Changer mot de passe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Informations personnelles</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Prénom</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Nom</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Nom d'utilisateur</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.username.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Téléphone</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone_number.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if user.role == 'admin' or user.is_superuser %}
+                        <div class="mb-3">
+                            <label for="{{ form.role.id_for_label }}" class="form-label">Rôle</label>
+                            {{ form.role }}
+                            {% if form.role.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.role.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label for="{{ form.profile_image.id_for_label }}" class="form-label">Photo de
+                                profil</label>
+                            {{ form.profile_image }}
+                            {% if form.profile_image.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.profile_image.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Format recommandé: JPG ou PNG, carré (1:1).</div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

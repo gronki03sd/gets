@@ -1,0 +1,65 @@
+<div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Compétence</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Événements</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for animateur in animateurs %}
+            <tr>
+                <td>{{ animateur.nom }}</td>
+                <td>{{ animateur.prenom }}</td>
+                <td>{{ animateur.competence|default:"-" }}</td>
+                <td>
+                    {% if animateur.email %}
+                    <a href="mailto:{{ animateur.email }}">{{ animateur.email }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if animateur.telephone %}
+                    <a href="tel:{{ animateur.telephone }}">{{ animateur.telephone }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-primary">{{ animateur.activites.count }} événements</span>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{% url 'admin_portal:animateur_detail' animateur.pk %}"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'admin_portal:animateur_edit' animateur.pk %}"
+                            class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'admin_portal:animateur_delete' animateur.pk %}"
+                            class="btn btn-sm btn-outline-danger delete-confirm">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="fas fa-info-circle me-2"></i>Aucun animateur trouvé.
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

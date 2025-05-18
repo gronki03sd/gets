@@ -1,0 +1,64 @@
+<div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Capacité</th>
+                <th>Localisation</th>
+                <th>Disponibilité</th>
+                <th>Événements</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for infrastructure in infrastructures %}
+            <tr>
+                <td>
+                    <a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}"
+                        class="text-decoration-none fw-bold">
+                        {{ infrastructure.nom }}
+                    </a>
+                </td>
+                <td>{{ infrastructure.type }}</td>
+                <td>{% if infrastructure.capacite %}{{ infrastructure.capacite }} personnes{% else %}-{% endif %}</td>
+                <td>{{ infrastructure.localisation|default:"-" }}</td>
+                <td>
+                    {% if infrastructure.disponible %}
+                    <span class="badge bg-success">Disponible</span>
+                    {% else %}
+                    <span class="badge bg-danger">Non disponible</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-primary">{{ infrastructure.activites.count }} événements</span>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'admin_portal:infrastructure_edit' infrastructure.pk %}"
+                            class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'admin_portal:infrastructure_delete' infrastructure.pk %}"
+                            class="btn btn-sm btn-outline-danger delete-confirm">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="fas fa-info-circle me-2"></i>Aucune infrastructure trouvée.
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

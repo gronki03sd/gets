@@ -1,0 +1,87 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Supprimer l'inscription - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:activite_detail' inscription.activite.pk %}">{{
+                    inscription.activite.nom }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Supprimer l'inscription</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-trash-alt me-2 text-danger"></i>Supprimer l'inscription</h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">Confirmation de suppression</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="alert-heading">Attention !</h5>
+                                <p>Vous êtes sur le point de supprimer définitivement l'inscription de <strong>{{
+                                        inscription.participant.prenom }} {{ inscription.participant.nom }}</strong> à
+                                    l'événement <strong>{{ inscription.activite.nom }}</strong>. Cette action est
+                                    irréversible.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3">Détails de l'inscription :</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Participant</dt>
+                        <dd class="col-sm-8">{{ inscription.participant.prenom }} {{ inscription.participant.nom }}</dd>
+
+                        <dt class="col-sm-4">Événement</dt>
+                        <dd class="col-sm-8">{{ inscription.activite.nom }}</dd>
+
+                        <dt class="col-sm-4">Date de l'événement</dt>
+                        <dd class="col-sm-8">{{ inscription.activite.date_debut|date:"d/m/Y H:i" }}</dd>
+
+                        <dt class="col-sm-4">Date d'inscription</dt>
+                        <dd class="col-sm-8">{{ inscription.date_inscription|date:"d/m/Y H:i" }}</dd>
+
+                        <dt class="col-sm-4">Statut</dt>
+                        <dd class="col-sm-8">
+                            {% if inscription.statut == 'inscrit' %}
+                            <span class="badge bg-success">Inscrit</span>
+                            {% elif inscription.statut == 'en_attente' %}
+                            <span class="badge bg-warning">En attente</span>
+                            {% elif inscription.statut == 'annule' %}
+                            <span class="badge bg-danger">Annulé</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_portal:activite_detail' inscription.activite.pk %}"
+                                class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Confirmer la suppression
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "client_portal/base.html" %}
+
+{% block title %}GETS - Plateforme de Gestion d'Événements{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Découvrez nos événements</h1>
+                <p class="lead mb-4">Trouvez et participez à des événements uniques, enrichissants et divertissants.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'client_portal:event_list' %}" class="btn btn-light btn-lg px-4 me-md-2">
+                        <i class="fas fa-calendar-alt me-2"></i>Voir les événements
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'client_portal:register' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="/static/images/events.jpg" alt="Événements" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Featured Events -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Événements à venir</h2>
+        <div class="row g-4">
+            {% for activity in upcoming_activities %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm event-card">
+                    <div class="card-img-top bg-light event-placeholder">
+                        <i class="fas fa-calendar-day fa-3x text-secondary"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ activity.nom }}</h5>
+                        <p class="card-text text-muted small">
+                            <i class="far fa-calendar-alt me-1"></i>{{ activity.date_debut|date:"j F Y" }}
+                            <i class="far fa-clock ms-2 me-1"></i>{{ activity.date_debut|date:"H:i" }}
+                        </p>
+                        <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
+                        {% if activity.est_complete %}
+                        <div class="mb-3"><span class="badge bg-danger">Complet</span></div>
+                        {% else %}
+                        <div class="mb-3"><span class="badge bg-success">Places disponibles</span></div>
+                        {% endif %}
+                        <a href="{% url 'client_portal:event_detail' activity.pk %}" class="btn btn-primary">
+                            <i class="fas fa-info-circle me-1"></i>Détails
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="text-muted">
+                    <i class="fas fa-info-circle fa-3x mb-3"></i>
+                    <h4>Aucun événement à venir</h4>
+                    <p>Revenez bientôt pour voir nos nouveaux événements.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if upcoming_activities %}
+        <div class="text-center mt-4">
+            <a href="{% url 'client_portal:event_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-calendar-alt me-2"></i>Voir tous les événements
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Features -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Pourquoi choisir GETS ?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-check fa-3x text-primary"></i>
+                    </div>
+                    <h5>Événements Variés</h5>
+                    <p class="mb-0">Découvrez une large gamme d'événements adaptés à tous les goûts et tous les âges.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-user-check fa-3x text-primary"></i>
+                    </div>
+                    <h5>Inscription Facile</h5>
+                    <p class="mb-0">Inscrivez-vous en quelques clics et gérez toutes vos participations depuis votre
+                        espace personnel.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h5>Sécurité & Confiance</h5>
+                    <p class="mb-0">Vos données sont sécurisées et tous nos événements sont vérifiés par nos équipes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="text-center py-5 mb-5 bg-light rounded">
+        <div class="py-4">
+            <h2 class="mb-3">Prêt à participer ?</h2>
+            <p class="lead mb-4">Rejoignez notre communauté et découvrez des événements passionnants.</p>
+            <div class="d-flex justify-content-center gap-3">
+                {% if user.is_authenticated %}
+                <a href="{% url 'client_portal:event_list' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-calendar-alt me-2"></i>Explorer les événements
+                </a>
+                {% else %}
+                <a href="{% url 'client_portal:register' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-user-plus me-2"></i>S'inscrire maintenant
+                </a>
+                <a href="{% url 'client_portal:login' %}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

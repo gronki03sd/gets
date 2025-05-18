@@ -1,0 +1,146 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Modifier l'inscription - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:activite_detail' inscription.activite.pk %}">{{
+                    inscription.activite.nom }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Modifier l'inscription</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-edit me-2"></i>Modifier l'inscription</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Détails de l'inscription</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Erreurs dans le
+                                formulaire</h5>
+                            {{ form.non_field_errors }}
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                {% if field.errors %}
+                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.participant.id_for_label }}" class="form-label">Participant</label>
+                                {{ form.participant }}
+                                {% if form.participant.help_text %}
+                                <div class="form-text">{{ form.participant.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.activite.id_for_label }}" class="form-label">Événement</label>
+                                {{ form.activite }}
+                                {% if form.activite.help_text %}
+                                <div class="form-text">{{ form.activite.help_text }}</div>
+                                {% endif %}
+                                <div class="alert alert-info p-2 mt-2 mb-0">
+                                    <strong>{{ inscription.activite.nom }}</strong>
+                                    <div>Date: {{ inscription.activite.date_debut|date:"d/m/Y H:i" }}</div>
+                                </div>
+                                </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.statut.id_for_label }}" class="form-label">Statut</label>
+                                    {{ form.statut }}
+                                    {% if form.statut.help_text %}
+                                    <div class="form-text">{{ form.statut.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'admin_portal:activite_detail' inscription.activite.pk %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                    </button>
+                                </div>
+                                </form>
+                                </div>
+                                </div>
+                                </div>
+                                
+                                <div class="col-lg-4">
+                                    <div class="card shadow-sm mb-4">
+                                        <div class="card-header bg-white">
+                                            <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Informations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <h6>Détails de l'inscription</h6>
+                                            <dl>
+                                                <dt>Participant</dt>
+                                                <dd>{{ inscription.participant.prenom }} {{ inscription.participant.nom }}</dd>
+                                
+                                                <dt>Événement</dt>
+                                                <dd>{{ inscription.activite.nom }}</dd>
+                                
+                                                <dt>Date d'inscription</dt>
+                                                <dd>{{ inscription.date_inscription|date:"d/m/Y H:i" }}</dd>
+                                
+                                                <dt>Statut actuel</dt>
+                                                <dd>
+                                                    {% if inscription.statut == 'inscrit' %}
+                                                    <span class="badge bg-success">Inscrit</span>
+                                                    {% elif inscription.statut == 'en_attente' %}
+                                                    <span class="badge bg-warning">En attente</span>
+                                                    {% elif inscription.statut == 'annule' %}
+                                                    <span class="badge bg-danger">Annulé</span>
+                                                    {% endif %}
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-white">
+                                            <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>Actions rapides</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-grid gap-2">
+                                                <a href="{% url 'admin_portal:participant_detail' inscription.participant.pk %}"
+                                                    class="btn btn-outline-primary">
+                                                    <i class="fas fa-user me-2"></i>Voir le participant
+                                                </a>
+                                                <a href="{% url 'admin_portal:activite_detail' inscription.activite.pk %}"
+                                                    class="btn btn-outline-secondary">
+                                                    <i class="fas fa-calendar-day me-2"></i>Voir l'événement
+                                                </a>
+                                                <a href="{% url 'admin_portal:inscription_delete' inscription.pk %}"
+                                                    class="btn btn-outline-danger delete-confirm">
+                                                    <i class="fas fa-trash-alt me-2"></i>Supprimer l'inscription
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                                {% endblock %}

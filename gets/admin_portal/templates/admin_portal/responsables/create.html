@@ -1,0 +1,123 @@
+{% extends "admin_portal/base.html" %}
+
+{% block title %}Ajouter un responsable - Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:dashboard' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_portal:responsable_list' %}">Responsables</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ajouter un responsable</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-user-plus me-2"></i>Ajouter un responsable</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Informations du responsable</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Erreurs dans le
+                                formulaire</h5>
+                            {{ form.non_field_errors }}
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                {% if field.errors %}
+                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                                {{ form.nom }}
+                                {% if form.nom.help_text %}
+                                <div class="form-text">{{ form.nom.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.prenom.id_for_label }}" class="form-label">Prénom</label>
+                                {{ form.prenom }}
+                                {% if form.prenom.help_text %}
+                                <div class="form-text">{{ form.prenom.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.specialite.id_for_label }}" class="form-label">Spécialité</label>
+                            {{ form.specialite }}
+                            {% if form.specialite.help_text %}
+                            <div class="form-text">{{ form.specialite.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                {{ form.email }}
+                                {% if form.email.help_text %}
+                                <div class="form-text">{{ form.email.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                                {{ form.telephone }}
+                                {% if form.telephone.help_text %}
+                                <div class="form-text">{{ form.telephone.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'admin_portal:responsable_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Aide</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Informations importantes</h6>
+                    <ul>
+                        <li>Le <strong>nom</strong> et le <strong>prénom</strong> sont obligatoires.</li>
+                        <li>La <strong>spécialité</strong> permet de mieux cibler les événements adaptés.</li>
+                        <li>L'<strong>email</strong> est utilisé pour les communications importantes.</li>
+                        <li>Le <strong>téléphone</strong> permet le contact rapide en cas d'urgence.</li>
+                    </ul>
+                    <hr>
+                    <p class="mb-0">Après avoir créé le responsable, vous pourrez l'assigner à des événements.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
