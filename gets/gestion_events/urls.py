@@ -1,14 +1,18 @@
-"""
-URL Configuration for  project.
-"""
+# gestion_events/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
+
+def redirect_to_client_home(request):
+    return redirect('client_portal:home')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('gestion_app.urls')),
+    path('django-admin/', admin.site.urls),  # Django admin site
+    path('admin/', include('admin_portal.urls', namespace='admin_portal')),  # Our custom admin portal
+    path('', include('client_portal.urls', namespace='client_portal')),  # Client-facing portal
+    
 ]
 
 if settings.DEBUG:

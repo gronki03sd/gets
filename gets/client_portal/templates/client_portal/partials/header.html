@@ -1,0 +1,63 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'client_portal:home' %}">
+                <i class="fas fa-calendar-check me-2"></i>GETS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}"
+                            href="{% url 'client_portal:home' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/events/' in request.path %}active{% endif %}"
+                            href="{% url 'client_portal:event_list' %}">Événements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/about/' in request.path %}active{% endif %}"
+                            href="{% url 'client_portal:about' %}">À propos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/contact/' in request.path %}active{% endif %}"
+                            href="{% url 'client_portal:contact' %}">Contact</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userMenu"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.first_name|default:user.username }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                            <li><a class="dropdown-item" href="{% url 'client_portal:dashboard' %}">Mon tableau de
+                                    bord</a></li>
+                            <li><a class="dropdown-item" href="{% url 'client_portal:profile' %}">Mon profil</a></li>
+                            {% if user.is_staff or user.is_superuser %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'admin_portal:dashboard' %}">Administration</a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'client_portal:logout' %}">Déconnexion</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'client_portal:login' %}" class="btn btn-outline-light me-2">Connexion</a>
+                    <a href="{% url 'client_portal:register' %}" class="btn btn-light">Inscription</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

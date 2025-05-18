@@ -30,8 +30,13 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     
-    # Custom apps - use this format to ensure proper initialization
-    'gestion_app.apps.GestionAppConfig',  # Make sure this is correct
+    # Custom apps - new organization
+    'common.apps.CommonConfig',
+    'admin_portal.apps.AdminPortalConfig',
+    'client_portal.apps.ClientPortalConfig',
+    
+    # Legacy app - remove after migration is complete
+    'gestion_app.apps.GestionAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +54,11 @@ ROOT_URLCONF = 'gestion_events.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',  # For backward compatibility
+            BASE_DIR / 'admin_portal' / 'templates',
+            BASE_DIR / 'client_portal' / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -92,8 +101,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Custom User Model
-AUTH_USER_MODEL = 'gestion_app.User'
+# Custom User Model - updated to use common app
+AUTH_USER_MODEL = 'common.User'
+
+# Authentication URLs
+LOGIN_URL = 'client_portal:login'
+LOGIN_REDIRECT_URL = 'client_portal:dashboard'
+LOGOUT_REDIRECT_URL = 'client_portal:home'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -112,6 +126,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    BASE_DIR / 'admin_portal' / 'static',
+    BASE_DIR / 'client_portal' / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -124,11 +140,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-# Login URLs
-LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'logout'
-LOGIN_REDIRECT_URL = '/'
-
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -144,6 +155,26 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+# Email settings (for production)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.yourmailserver.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@example.com'
+# EMAIL_HOST_PASSWORD = 'your-password'
+# DEFAULT_FROM_EMAIL = 'GETS Events <noreply@example.com>'
+
+# For development, use the console backend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Security settings (for production)
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
