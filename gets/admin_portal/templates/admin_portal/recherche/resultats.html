@@ -1,326 +1,391 @@
-{% if query %}
+{% extends "admin_portal/base.html" %}
 
-{% if responsables %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-user-tie me-2"></i>Responsables ({{ responsables|length }})</h5>
-        <a href="{% url 'admin_portal:responsable_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Spécialité</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for responsable in responsables %}
-                    <tr>
-                        <td>{{ responsable.nom }}</td>
-                        <td>{{ responsable.prenom }}</td>
-                        <td>{{ responsable.specialite|default:"-" }}</td>
-                        <td>{{ responsable.email|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'admin_portal:responsable_detail' responsable.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucun responsable trouvé.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-{% endif %}
+{% block title %}Recherche avancée - GETS Admin{% endblock %}
 
-{% if animateurs %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-user-friends me-2"></i>Animateurs ({{ animateurs|length }})</h5>
-        <a href="{% url 'admin_portal:animateur_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Compétence</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for animateur in animateurs %}
-                    <tr>
-                        <td>{{ animateur.nom }}</td>
-                        <td>{{ animateur.prenom }}</td>
-                        <td>{{ animateur.competence|default:"-" }}</td>
-                        <td>{{ animateur.email|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'admin_portal:animateur_detail' animateur.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucun animateur trouvé.
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recherche avancée</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" name="query" value="{{ query }}"
+                                    placeholder="Rechercher...">
                             </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="entity_type" class="form-select">
+                                <option value="all">Tout</option>
+                                <option value="participants">Participants</option>
+                                <option value="activites">Activités</option>
+                                <option value="responsables">Responsables</option>
+                                <option value="animateurs">Animateurs</option>
+                                <option value="infrastructures">Infrastructures</option>
+                                <option value="materiels">Matériel</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-{% endif %}
-{% if responsables %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-user-tie me-2"></i>Responsables ({{ responsables|length }})</h5>
-        <a href="{% url 'admin_portal:responsable_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Spécialité</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for responsable in responsables %}
-                    <tr>
-                        <td>{{ responsable.nom }}</td>
-                        <td>{{ responsable.prenom }}</td>
-                        <td>{{ responsable.specialite|default:"-" }}</td>
-                        <td>{{ responsable.email|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'admin_portal:responsable_detail' responsable.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucun responsable trouvé.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-{% endif %}
 
-{% if animateurs %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-user-friends me-2"></i>Animateurs ({{ animateurs|length }})</h5>
-        <a href="{% url 'admin_portal:animateur_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Compétence</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for animateur in animateurs %}
-                    <tr>
-                        <td>{{ animateur.nom }}</td>
-                        <td>{{ animateur.prenom }}</td>
-                        <td>{{ animateur.competence|default:"-" }}</td>
-                        <td>{{ animateur.email|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'admin_portal:animateur_detail' animateur.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucun animateur trouvé.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    {% if query %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>Résultats de recherche pour
+                <strong>"{{ query }}"</strong>
+                {% if type_recherche %}
+                dans <strong>{{ type_recherche }}</strong>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-{% endif %}
 
-{% if infrastructures %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-building me-2"></i>Infrastructures ({{ infrastructures|length }})
-        </h5>
-        <a href="{% url 'admin_portal:infrastructure_list' %}" class="btn btn-sm btn-outline-primary">Voir toutes</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Capacité</th>
-                        <th>Disponibilité</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for infrastructure in infrastructures %}
-                    <tr>
-                        <td>{{ infrastructure.nom }}</td>
-                        <td>{{ infrastructure.type }}</td>
-                        <td>{% if infrastructure.capacite %}{{ infrastructure.capacite }} personnes{% else %}-{% endif
-                            %}</td>
-                        <td>
-                            {% if infrastructure.disponible %}
-                            <span class="badge bg-success">Disponible</span>
-                            {% else %}
-                            <span class="badge bg-danger">Non disponible</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucune infrastructure trouvée.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Participants Results -->
+    {% if participants %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-users me-2"></i>Participants ({{ participants|length }})</h5>
+            <a href="{% url 'admin_portal:participant_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for participant in participants %}
+                        <tr>
+                            <td>{{ participant.nom }}</td>
+                            <td>{{ participant.prenom }}</td>
+                            <td>{{ participant.email|default:"-" }}</td>
+                            <td>{{ participant.telephone|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'admin_portal:participant_detail' participant.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucun participant trouvé.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
-{% if materiels %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0"><i class="fas fa-toolbox me-2"></i>Matériel ({{ materiels|length }})</h5>
-        <a href="{% url 'admin_portal:materiel_list' %}" class="btn btn-sm btn-outline-primary">Voir tout</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Quantité disponible</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for materiel in materiels %}
-                    <tr>
-                        <td>{{ materiel.nom }}</td>
-                        <td>{{ materiel.description|truncatechars:50|default:"-" }}</td>
-                        <td>
-                            {% if materiel.quantite_disponible > 0 %}
-                            <span class="badge bg-success">{{ materiel.quantite_disponible }} unités</span>
-                            {% else %}
-                            <span class="badge bg-danger">En rupture</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'admin_portal:materiel_detail' materiel.pk %}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Détails
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Aucun matériel trouvé.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Activités Results -->
+    {% if activites %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-calendar-alt me-2"></i>Activités ({{ activites|length }})</h5>
+            <a href="{% url 'admin_portal:activite_list' %}" class="btn btn-sm btn-outline-primary">Voir toutes</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Date</th>
+                            <th>Durée</th>
+                            <th>Responsable</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activite in activites %}
+                        <tr>
+                            <td>{{ activite.nom }}</td>
+                            <td>{{ activite.date_debut|date:"j F Y H:i" }}</td>
+                            <td>{{ activite.duree }} min</td>
+                            <td>{{ activite.responsable|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'admin_portal:activite_detail' activite.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucune activité trouvée.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
-{% if not participants and not activites and not responsables and not animateurs and not infrastructures and not
-materiels %}
-<div class="card shadow-sm">
-    <div class="card-body text-center py-5">
-        <div class="mb-3">
-            <i class="fas fa-search fa-3x text-secondary"></i>
+    <!-- Responsables Results -->
+    {% if responsables %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-user-tie me-2"></i>Responsables ({{ responsables|length }})
+            </h5>
+            <a href="{% url 'admin_portal:responsable_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
         </div>
-        <h4>Aucun résultat trouvé</h4>
-        <p class="text-muted">Essayez de modifier vos critères de recherche.</p>
-    </div>
-</div>
-{% endif %}
-{% else %}
-<div class="card shadow-sm">
-    <div class="card-body text-center py-5">
-        <div class="mb-3">
-            <i class="fas fa-search fa-3x text-secondary"></i>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Spécialité</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for responsable in responsables %}
+                        <tr>
+                            <td>{{ responsable.nom }}</td>
+                            <td>{{ responsable.prenom }}</td>
+                            <td>{{ responsable.specialite|default:"-" }}</td>
+                            <td>{{ responsable.email|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'admin_portal:responsable_detail' responsable.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucun responsable trouvé.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <h4>Recherche avancée</h4>
-        <p class="text-muted">Utilisez le formulaire ci-dessus pour rechercher des éléments dans le système.</p>
     </div>
-</div>
-{% endif %}
+    {% endif %}
+
+    <!-- Animateurs Results -->
+    {% if animateurs %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-user-friends me-2"></i>Animateurs ({{ animateurs|length }})
+            </h5>
+            <a href="{% url 'admin_portal:animateur_list' %}" class="btn btn-sm btn-outline-primary">Voir tous</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Compétence</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for animateur in animateurs %}
+                        <tr>
+                            <td>{{ animateur.nom }}</td>
+                            <td>{{ animateur.prenom }}</td>
+                            <td>{{ animateur.competence|default:"-" }}</td>
+                            <td>{{ animateur.email|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'admin_portal:animateur_detail' animateur.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucun animateur trouvé.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Infrastructures Results -->
+    {% if infrastructures %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-building me-2"></i>Infrastructures ({{ infrastructures|length
+                }})</h5>
+            <a href="{% url 'admin_portal:infrastructure_list' %}" class="btn btn-sm btn-outline-primary">Voir
+                toutes</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>Capacité</th>
+                            <th>Disponibilité</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for infrastructure in infrastructures %}
+                        <tr>
+                            <td>{{ infrastructure.nom }}</td>
+                            <td>{{ infrastructure.type }}</td>
+                            <td>{% if infrastructure.capacite %}{{ infrastructure.capacite }} personnes{% else %}-{%
+                                endif %}</td>
+                            <td>
+                                {% if infrastructure.disponible %}
+                                <span class="badge bg-success">Disponible</span>
+                                {% else %}
+                                <span class="badge bg-danger">Non disponible</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'admin_portal:infrastructure_detail' infrastructure.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucune infrastructure trouvée.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Matériel Results -->
+    {% if materiels %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-toolbox me-2"></i>Matériel ({{ materiels|length }})</h5>
+            <a href="{% url 'admin_portal:materiel_list' %}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Quantité disponible</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materiel in materiels %}
+                        <tr>
+                            <td>{{ materiel.nom }}</td>
+                            <td>{{ materiel.description|truncatechars:50|default:"-" }}</td>
+                            <td>
+                                {% if materiel.quantite_disponible > 0 %}
+                                <span class="badge bg-success">{{ materiel.quantite_disponible }} unités</span>
+                                {% else %}
+                                <span class="badge bg-danger">En rupture</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'admin_portal:materiel_detail' materiel.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Aucun matériel trouvé.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- No Results Message -->
+    {% if not participants and not activites and not responsables and not animateurs and not infrastructures and not
+    materiels %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="mb-3">
+                <i class="fas fa-search fa-3x text-secondary"></i>
+            </div>
+            <h4>Aucun résultat trouvé</h4>
+            <p class="text-muted">Essayez de modifier vos critères de recherche.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- No Search Yet Message -->
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="mb-3">
+                <i class="fas fa-search fa-3x text-secondary"></i>
+            </div>
+            <h4>Recherche avancée</h4>
+            <p class="text-muted">Utilisez le formulaire ci-dessus pour rechercher des éléments dans le système.</p>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
